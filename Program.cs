@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -102,8 +103,23 @@ namespace EbookHelper
 
             while (end < aText.Length)
             {
-                start = aText.IndexOf("<p>", end) + paragraphBegin.Length;
-                end = aText.IndexOf("</p>", start);
+                var startIndex = aText.IndexOf("<p>", end);
+
+                if (-1 == startIndex)
+                {
+                    break;
+                }
+
+                start = startIndex + paragraphBegin.Length;
+
+                var endIndex = aText.IndexOf("</p>", start);
+
+                if (-1 == endIndex)
+                {
+                    break;
+                }
+
+                end = endIndex;
 
                 var line = aText.Substring(start, end - start);
 
@@ -119,13 +135,13 @@ namespace EbookHelper
         static void Main(string[] args)
         {
             var builder = new StringBuilder();
-            var text = File.ReadAllText("C:/Users/playm/Documents/ebooks/HaruhiTempoLoss.txt");
+            var text = File.ReadAllText("C:/Users/jofisher/Documents/EpubTest/ReturningFavorText.txt");
 
             var paragraphs = parseTextForParagraphs(text);
 
             parseParagraphs(paragraphs, builder);
 
-            File.WriteAllText("C:/Users/playm/Documents/ebooks/HaruhiTempoLossProcessed.html", builder.ToString());
+            File.WriteAllText("C:/Users/jofisher/Documents/EpubTest/ReturningFavorProcessed.txt", builder.ToString());
         }
     }
 }
